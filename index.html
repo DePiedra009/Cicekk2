@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>He made a bouquet for me</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #050505;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .text-overlay {
+            position: absolute;
+            top: 12%;
+            color: #f0f0f0;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+            z-index: 2;
+            opacity: 0;
+            animation: fadeInText 2.5s ease-in-out forwards;
+            animation-delay: 1s;
+            letter-spacing: 2px;
+        }
+
+        @keyframes fadeInText {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="text-overlay">He made a bouquet for me</div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Gerçekçi Gonca Gül Çizen Fonksiyon
+        function drawRealisticRose(x, y, scale, progress) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(scale * progress, scale * progress);
+
+            // Çanak yapraklar (Yeşil taban)
+            ctx.fillStyle = '#1e8449';
+            ctx.beginPath();
+            ctx.moveTo(-12, -10);
+            ctx.lineTo(-24, 12);
+            ctx.lineTo(-4, 4);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(12, -10);
+            ctx.lineTo(24, 12);
+            ctx.lineTo(4, 4);
+            ctx.fill();
+
+            // Dıştaki büyük yapraklar
+            ctx.fillStyle = 'rgba(235, 235, 235, 0.95)';
+            ctx.beginPath();
+            ctx.ellipse(-15, -20, 15, 30, -0.2, 0, 2 * Math.PI);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.ellipse(15, -20, 15, 30, 0.2, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Yandaki bombeli yapraklar
+            ctx.fillStyle = 'rgba(215, 215, 215, 0.95)';
+            ctx.beginPath();
+            ctx.ellipse(-24, -8, 13, 25, -0.5, 0, 2 * Math.PI);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.ellipse(24, -8, 13, 25, 0.5, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Ortadaki ana katmanlar
+            ctx.fillStyle = 'rgba(245, 245, 245, 0.98)';
+            ctx.beginPath();
+            ctx.ellipse(-8, -30, 12, 28, -0.1, 0, 2 * Math.PI);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.ellipse(8, -30, 12, 28, 0.1, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // En merkezdeki kalbi
+            ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+            ctx.beginPath();
+            ctx.ellipse(0, -36, 10, 24, 0, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // İç çizgi detayları
+            ctx.strokeStyle = 'rgba(190, 190, 190, 0.5)';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(0, -15);
+            ctx.quadraticCurveTo(0, -38, -4, -48);
+            ctx.moveTo(0, -15);
+            ctx.quadraticCurveTo(0, -38, 4, -45);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+
+        const flowersData = [
+            {x: cx - 110, y: cy - 65, scale: 1.05},
+            {x: cx + 110, y: cy - 65, scale: 1.05},
+            {x: cx - 180, y: cy - 25, scale: 1.0},
+            {x: cx + 180, y: cy - 25, scale: 1.0},
+            {x: cx - 240, y: cy + 10, scale: 0.95},
+            {x: cx + 240, y: cy + 10, scale: 0.95},
+            {x: cx - 60, y: cy - 110, scale: 0.85},
+            {x: cx + 60, y: cy - 110, scale: 0.85},
+            {x: cx, y: cy - 95, scale: 1.0},
+            {x: cx - 145, y: cy - 100, scale: 0.75},
+            {x: cx + 145, y: cy - 100, scale: 0.75},
+            {x: cx - 210, y: cy - 65, scale: 0.72},
+            {x: cx + 210, y: cy - 65, scale: 0.72},
+            {x: cx - 150, y: cy, scale: 0.78},
+            {x: cx + 150, y: cy, scale: 0.78},
+            {x: cx - 95, y: cy - 35, scale: 0.9},
+            {x: cx + 95, y: cy - 35, scale: 0.9},
+            {x: cx - 35, y: cy - 60, scale: 0.85},
+            {x: cx + 35, y: cy - 60, scale: 0.85}
+        ];
+
+        function drawStems(progress) {
+            ctx.save();
+            
+            const startX = canvas.width / 2;
+            const startY = canvas.height + 50;
+
+            // Sadece saplar çiziliyor, kağıt/koni tamamen kaldırıldı
+            ctx.strokeStyle = '#27ae60';
+            ctx.lineWidth = 2.2;
+            ctx.shadowColor = 'rgba(39, 174, 96, 0.3)';
+            ctx.shadowBlur = 3;
+
+            flowersData.forEach(f => {
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                let currentX = startX + (f.x - startX) * progress;
+                let currentY = startY + (f.y - startY) * progress;
+                ctx.lineTo(currentX, currentY);
+                ctx.stroke();
+            });
+
+            ctx.restore();
+        }
+
+        let progress = 0;
+
+        function animate() {
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (progress < 1) {
+                progress += 0.006; 
+            }
+
+            drawStems(progress);
+
+            if (progress >= 0.3) {
+                let roseProgress = Math.min((progress - 0.3) / 0.7, 1);
+                flowersData.forEach(f => {
+                    drawRealisticRose(f.x, f.y, f.scale, roseProgress);
+                });
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
